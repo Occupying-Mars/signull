@@ -7,11 +7,10 @@ styles.textContent = `
   .jev-card{position:relative!important;transition:opacity .2s ease,filter .2s ease}
   .jev-card.jev-no.jev-dim{opacity:.32!important;filter:saturate(.25)}
   .jev-card:hover{opacity:1!important;filter:none!important}
-  .jev-card::after{content:attr(data-jev-label);position:absolute;z-index:9999;top:10px;right:44px;padding:6px 8px;border:1px solid rgba(255,255,255,.13);border-radius:999px;background:rgba(11,13,12,.94);box-shadow:0 5px 20px rgba(0,0,0,.22);color:#c6ff5c;font:700 11px/1 ui-monospace,SFMono-Regular,monospace;pointer-events:none;backdrop-filter:blur(8px)}
-  .jev-card.jev-no::after{color:#ff8168}
-  .jev-card.jev-pending::after{color:#8d918d;animation:jev-pulse 1s infinite alternate}
-  #jev-status{position:fixed;right:18px;bottom:18px;z-index:2147483647;padding:8px 10px;border:1px solid rgba(198,255,92,.25);border-radius:999px;background:rgba(11,13,12,.94);color:#c6ff5c;font:700 11px/1 ui-monospace,SFMono-Regular,monospace;box-shadow:0 8px 28px #0007;pointer-events:none}
-  @keyframes jev-pulse{to{opacity:.25}}
+  .jev-card::after{content:attr(data-jev-label);position:absolute;z-index:9999;top:10px;right:44px;padding:5px 7px;border:1px solid rgba(255,255,255,.12);border-radius:7px;background:rgba(24,26,29,.94);color:#d4d6d8;font:650 10px/1 ui-monospace,SFMono-Regular,monospace;pointer-events:none}
+  .jev-card.jev-no::after{color:#b9aaa7}
+  .jev-card.jev-pending::after{color:#858a8f}
+  #jev-status{position:fixed;right:18px;bottom:18px;z-index:2147483647;padding:7px 9px;border:1px solid rgba(255,255,255,.1);border-radius:7px;background:rgba(24,26,29,.94);color:#aeb2b6;font:650 10px/1 ui-monospace,SFMono-Regular,monospace;pointer-events:none}
 `;
 document.documentElement.appendChild(styles);
 
@@ -166,7 +165,7 @@ function showToast(message) {
   const toast = document.createElement('div');
   toast.id = 'jev-toast';
   toast.textContent = `signull: ${message}`;
-  Object.assign(toast.style, { position:'fixed', right:'20px', bottom:'20px', zIndex:2147483647, background:'#171917', color:'#ff9a86', border:'1px solid #3a2b28', borderRadius:'12px', padding:'11px 14px', font:'600 12px system-ui', maxWidth:'340px', boxShadow:'0 10px 35px #0008' });
+  Object.assign(toast.style, { position:'fixed', right:'20px', bottom:'20px', zIndex:2147483647, background:'#181a1d', color:'#c3a5a0', border:'1px solid #3b3434', borderRadius:'8px', padding:'10px 12px', font:'600 12px system-ui', maxWidth:'340px' });
   document.body.appendChild(toast);
   setTimeout(() => toast.remove(), 6000);
 }

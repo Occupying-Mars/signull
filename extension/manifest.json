@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "signull",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "mark x posts and youtube videos you are likely to enjoy.",
   "permissions": ["storage", "activeTab"],
   "host_permissions": ["https://ai-gateway.vercel.sh/*"],
