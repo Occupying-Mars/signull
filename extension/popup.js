@@ -64,22 +64,18 @@ run.addEventListener('click', async () => {
   }
 });
 
-stop.addEventListener('click', async () => {
-  stop.disabled = true;
-  await chrome.storage.local.set({ enabled: false });
+stop.addEventListener('click', () => {
   setLive(false);
-
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  if (tab?.id && /^https:\/\/(x\.com|twitter\.com|www\.youtube\.com)\//.test(tab.url || '')) {
-    try {
-      await chrome.tabs.sendMessage(tab.id, { type: 'JEV_STOP' });
-    } catch {
-      // The saved off state still prevents filtering after a page reload.
-    }
-  }
-
   show('filtering stopped and all marks cleared');
-  stop.disabled = false;
+  chrome.storage.local.set({ enabled: false });
+
+  chrome.tabs.query({ active: true, currentWindow: true }).then(([tab]) => {
+    if (tab?.id && /^https:\/\/(x\.com|twitter\.com|www\.youtube\.com)\//.test(tab.url || '')) {
+      chrome.tabs.sendMessage(tab.id, { type: 'JEV_STOP' }).catch(() => {
+        // The saved off state still prevents filtering after a page reload.
+      });
+    }
+  });
 });
 
 function syncPromptMode() {
