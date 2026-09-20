@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0f1012">
+  <meta name="description" content="signull quietly sorts x and youtube around what you care about.">
+  <title>signull — keep the signal</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --paper: #0f1012;
+      --surface: #17181b;
+      --ink: #eeede8;
+      --muted: #8e9195;
+      --line: #2a2c30;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { min-height: 100%; background: var(--paper); }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    main {
+      width: min(100% - 40px, 1120px);
+      min-height: 100vh;
+      margin: 0 auto;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .wordmark {
+      color: var(--ink);
+      font-size: 19px;
+      font-weight: 760;
+      letter-spacing: -.045em;
+      text-decoration: none;
+    }
+
+    .version {
+      color: var(--muted);
+      font: 600 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+      letter-spacing: .08em;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 340px;
+      gap: clamp(48px, 10vw, 140px);
+      align-items: center;
+      padding: 96px 0;
+    }
+
+    .kicker {
+      margin: 0 0 20px;
+      color: var(--muted);
+      font: 650 11px/1.3 ui-monospace, SFMono-Regular, Menlo, monospace;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 720px;
+      margin: 0;
+      font-size: clamp(52px, 8vw, 104px);
+      font-weight: 650;
+      line-height: .92;
+      letter-spacing: -.075em;
+    }
+
+    .intro {
+      max-width: 560px;
+      margin: 28px 0 34px;
+      color: #a9acaf;
+      font-size: clamp(17px, 2vw, 20px);
+      line-height: 1.55;
+      letter-spacing: -.015em;
+    }
+
+    .download {
+      display: inline-flex;
+      align-items: center;
+      gap: 28px;
+      min-height: 52px;
+      padding: 0 18px;
+      border: 1px solid #dededb;
+      border-radius: 8px;
+      color: #171819;
+      background: #e7e7e3;
+      font-size: 14px;
+      font-weight: 720;
+      text-decoration: none;
+      transition: background .15s ease, transform .15s ease;
+    }
+
+    .download:hover { background: #f5f5f2; transform: translateY(-1px); }
+    .download:focus-visible { outline: 2px solid #777b80; outline-offset: 4px; }
+    .download span { color: #626568; font: 600 11px ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+    .note {
+      margin: 16px 0 0;
+      color: #73777b;
+      font: 500 11px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    .object {
+      position: relative;
+      aspect-ratio: 4 / 5;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--surface);
+      overflow: hidden;
+    }
+
+    .object::before {
+      content: "";
+      position: absolute;
+      inset: 12%;
+      border: 1px solid #35383c;
+      border-radius: 50%;
+    }
+
+    .object::after {
+      content: "";
+      position: absolute;
+      top: 12%;
+      bottom: 12%;
+      left: 50%;
+      border-left: 1px solid #35383c;
+    }
+
+    .signal {
+      position: absolute;
+      left: 12%;
+      right: 12%;
+      top: 50%;
+      height: 1px;
+      background: #c8c8c4;
+    }
+
+    .signal::before,
+    .signal::after {
+      content: "";
+      position: absolute;
+      top: -4px;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #c8c8c4;
+    }
+
+    .signal::before { left: 22%; }
+    .signal::after { right: 22%; }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 24px 0 30px;
+      border-top: 1px solid var(--line);
+      color: #74787c;
+      font: 500 11px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    footer a { color: #a9acae; text-underline-offset: 3px; }
+
+    @media (max-width: 760px) {
+      .hero { grid-template-columns: 1fr; padding: 70px 0; }
+      .object { width: min(100%, 320px); }
+      footer { flex-direction: column; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .download { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <nav aria-label="primary">
+      <a class="wordmark" href="/">signull</a>
+      <span class="version">v0.3.2</span>
+    </nav>
+
+    <section class="hero">
+      <div>
+        <p class="kicker">a quieter feed</p>
+        <h1>keep the<br>signal.</h1>
+        <p class="intro">signull reads what is already on your x and youtube feeds, then quietly marks what matches your taste.</p>
+        <a class="download" href="/signull-extension.zip" download>
+          download extension
+          <span>.zip</span>
+        </a>
+        <p class="note">unzip · open arc://extensions · enable developer mode · load unpacked</p>
+      </div>
+
+      <div class="object" aria-hidden="true">
+        <span class="signal"></span>
+      </div>
+    </section>
+
+    <footer>
+      <span>bring your own vercel ai gateway key</span>
+      <a href="https://github.com/Occupying-Mars/signull">source</a>
+    </footer>
+  </main>
+</body>
+</html>
