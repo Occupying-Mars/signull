@@ -1,11 +1,11 @@
 {
   "manifest_version": 3,
-  "name": "jev signal",
-  "version": "0.1.0",
+  "name": "signull",
+  "version": "0.2.0",
   "description": "mark x posts and youtube videos you are likely to enjoy.",
   "permissions": ["storage", "activeTab"],
   "host_permissions": ["https://ai-gateway.vercel.sh/*"],
-  "action": { "default_popup": "popup.html", "default_title": "jev signal" },
+  "action": { "default_popup": "popup.html", "default_title": "signull" },
   "background": { "service_worker": "background.js", "type": "module" },
   "content_scripts": [{
     "matches": ["https://x.com/*", "https://twitter.com/*", "https://www.youtube.com/*"],

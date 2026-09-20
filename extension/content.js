@@ -18,11 +18,12 @@ document.documentElement.appendChild(styles);
 chrome.runtime.onMessage.addListener((message, _sender, respond) => {
   if (message?.type !== 'JEV_RUN') return;
   state.settings = message.settings;
+  resetMarks();
   scan();
-  respond({ message: 'jev is marking this feed' });
+  respond({ message: 'signull is marking this feed' });
 });
 
-chrome.storage.local.get({ enabled: false, preference: '', dim: true }, (saved) => {
+chrome.storage.local.get({ enabled: false, preference: '', xPreference: '', youtubePreference: '', samePrompt: true, dim: true }, (saved) => {
   if (saved.enabled) {
     state.settings = saved;
     updateStatus('scanning');
@@ -37,12 +38,17 @@ new MutationObserver(() => {
 
 function candidates() {
   if (location.hostname === 'www.youtube.com') {
-    return [...document.querySelectorAll('ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer,ytd-grid-video-renderer')].map((element) => {
-      const titleNode = element.querySelector('#video-title');
-      const title = titleNode?.textContent?.trim();
+    const modernCards = [...document.querySelectorAll('yt-lockup-view-model')];
+    const legacyCards = [...document.querySelectorAll('ytd-rich-item-renderer,ytd-video-renderer,ytd-compact-video-renderer,ytd-grid-video-renderer')];
+    const cards = modernCards.length ? modernCards : legacyCards;
+    return cards.map((element) => {
+      const titleNode = element.querySelector('#video-title,a#video-title-link,a.yt-lockup-metadata-view-model__title,a[href*="/watch"]');
+      const title = titleNode?.getAttribute('title')?.trim()
+        || titleNode?.getAttribute('aria-label')?.trim()
+        || titleNode?.textContent?.trim();
       if (!title) return null;
-      const creator = element.querySelector('ytd-channel-name,#channel-name')?.textContent?.trim() || '';
-      const context = element.querySelector('#metadata-line')?.textContent?.trim() || '';
+      const creator = element.querySelector('ytd-channel-name,#channel-name,a[href^="/@"],.yt-lockup-metadata-view-model__metadata')?.textContent?.trim() || '';
+      const context = element.querySelector('#metadata-line,.yt-lockup-metadata-view-model__metadata')?.textContent?.trim() || '';
       const href = titleNode?.href || title;
       return { element, id: hash(href), platform: 'youtube', title, creator, context };
     }).filter(Boolean);
@@ -58,7 +64,8 @@ function candidates() {
 }
 
 function scan() {
-  if (!state.settings?.preference) return;
+  const preference = pagePreference();
+  if (!preference) return;
   while (state.active < MAX_CONCURRENCY) {
     const pending = candidates().filter(({ element, id }) => {
       if (state.cache.has(id)) { mark(element, state.cache.get(id)); return false; }
@@ -78,7 +85,7 @@ async function runBatch(pending) {
   try {
     const response = await chrome.runtime.sendMessage({
       type: 'JEV_CLASSIFY',
-      preference: state.settings.preference,
+      preference: pagePreference(),
       items: pending.map(({ element: _element, ...item }) => item),
     });
     if (response?.error) throw new Error(response.error);
@@ -93,9 +100,29 @@ async function runBatch(pending) {
   }
 }
 
+function pagePreference() {
+  const legacy = state.settings?.preference || '';
+  if (location.hostname === 'www.youtube.com') {
+    return state.settings?.samePrompt
+      ? state.settings?.xPreference || legacy
+      : state.settings?.youtubePreference || legacy;
+  }
+  return state.settings?.xPreference || legacy;
+}
+
+function resetMarks() {
+  state.cache.clear();
+  document.querySelectorAll('[data-jev-queued],[data-jev-result]').forEach((element) => {
+    element.classList.remove('jev-card', 'jev-pending', 'jev-yes', 'jev-no', 'jev-dim');
+    delete element.dataset.jevQueued;
+    delete element.dataset.jevResult;
+    delete element.dataset.jevLabel;
+  });
+}
+
 function markPending(element) {
   element.classList.add('jev-card', 'jev-pending');
-  element.dataset.jevLabel = 'jev · checking';
+  element.dataset.jevLabel = 'signull · checking';
 }
 
 function mark(element, result) {
@@ -117,14 +144,14 @@ function clearMark(element) {
 function updateStatus(message) {
   let node = document.querySelector('#jev-status');
   if (!node) { node = document.createElement('div'); node.id = 'jev-status'; document.documentElement.appendChild(node); }
-  node.textContent = `jev · ${message}`;
+  node.textContent = `signull · ${message}`;
 }
 
 function showToast(message) {
   if (document.querySelector('#jev-toast')) return;
   const toast = document.createElement('div');
   toast.id = 'jev-toast';
-  toast.textContent = `jev: ${message}`;
+  toast.textContent = `signull: ${message}`;
   Object.assign(toast.style, { position:'fixed', right:'20px', bottom:'20px', zIndex:2147483647, background:'#171917', color:'#ff9a86', border:'1px solid #3a2b28', borderRadius:'12px', padding:'11px 14px', font:'600 12px system-ui', maxWidth:'340px', boxShadow:'0 10px 35px #0008' });
   document.body.appendChild(toast);
   setTimeout(() => toast.remove(), 6000);

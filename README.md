@@ -1,10 +1,12 @@
-# jev signal
+# signull
 
 a small chrome extension that marks likely-interesting x posts and youtube videos with `typesafe-ai/jev` through vercel ai gateway.
 
 ## install
 
-load `extension/` as an unpacked extension at `chrome://extensions`. paste your own vercel ai gateway key, enter your preference, and click **mark this feed**.
+load `extension/` as an unpacked extension at `chrome://extensions`. paste your own vercel ai gateway key, enter your x preference, and click **mark this feed**.
+
+the youtube classifier is built into the same extension. keep **use this prompt for youtube** enabled to share one taste prompt, or turn it off to set a separate youtube prompt.
 
 you can also import a local `.env` containing `VERCEL_KEY=...`. visible items are classified in batches of six with up to three concurrent gateway requests.
 

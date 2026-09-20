@@ -3,17 +3,22 @@
 <head>
   <meta charset="utf-8">
   <style>
-    :root{color-scheme:dark;--lime:#c6ff5c;--ink:#f4f2eb;--muted:#8d918d;--line:#2a2e2b}*{box-sizing:border-box}body{width:338px;margin:0;padding:20px;background:#0c0e0d;color:var(--ink);font:14px/1.4 Inter,system-ui,sans-serif}.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:19px}.brand{font-size:20px;font-weight:850;letter-spacing:-.04em}.brand i{color:var(--lime);font-style:normal}.live{font:700 10px ui-monospace,monospace;color:var(--lime);letter-spacing:.1em}.live:before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:currentColor;margin-right:6px;box-shadow:0 0 10px currentColor}label{display:block;color:var(--muted);font:600 10px ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;margin:0 0 8px}textarea,input{width:100%;background:#141715;border:1px solid var(--line);border-radius:11px;color:var(--ink);font:inherit;padding:11px 12px;outline:none;resize:vertical}textarea:focus,input:focus{border-color:#647b3b}.key-row{display:flex;gap:7px}.key-row input{min-width:0}.key-row .import{width:auto;flex:0 0 auto;background:#202420;color:#c8ccc8;border:1px solid var(--line);padding:0 10px;font:700 10px ui-monospace,monospace}.key-note{margin:6px 2px 17px;color:#626762;font:10px ui-monospace,monospace}.row{display:flex;align-items:center;justify-content:space-between;margin:14px 0}.row label{margin:0;color:var(--ink);font:500 13px system-ui;text-transform:none;letter-spacing:0}.switch{accent-color:var(--lime)}button{width:100%;border:0;border-radius:11px;background:var(--lime);color:#10120f;padding:12px;font-weight:850;cursor:pointer}button:disabled{opacity:.5}.status{min-height:17px;margin:10px 2px 0;color:var(--muted);font-size:12px}.status.error{color:#ff8168}
+    :root{color-scheme:dark;--lime:#c6ff5c;--ink:#f4f2eb;--muted:#8d918d;--line:#2a2e2b}*{box-sizing:border-box}body{width:338px;margin:0;padding:20px;background:#0c0e0d;color:var(--ink);font:14px/1.4 Inter,system-ui,sans-serif}.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:19px}.brand{font-size:20px;font-weight:850;letter-spacing:-.04em}.brand i{color:var(--lime);font-style:normal}.live{font:700 10px ui-monospace,monospace;color:var(--lime);letter-spacing:.1em}.live:before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:currentColor;margin-right:6px;box-shadow:0 0 10px currentColor}label{display:block;color:var(--muted);font:600 10px ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;margin:0 0 8px}textarea,input{width:100%;background:#141715;border:1px solid var(--line);border-radius:11px;color:var(--ink);font:inherit;padding:11px 12px;outline:none;resize:vertical}textarea:focus,input:focus{border-color:#647b3b}.key-row{display:flex;gap:7px}.key-row input{min-width:0}.key-row .import{width:auto;flex:0 0 auto;background:#202420;color:#c8ccc8;border:1px solid var(--line);padding:0 10px;font:700 10px ui-monospace,monospace}.key-note{margin:6px 2px 17px;color:#626762;font:10px ui-monospace,monospace}.prompt{margin-top:14px}.row{display:flex;align-items:center;justify-content:space-between;margin:14px 0}.row label{margin:0;color:var(--ink);font:500 13px system-ui;text-transform:none;letter-spacing:0}.switch{accent-color:var(--lime)}.hidden{display:none}button{width:100%;border:0;border-radius:11px;background:var(--lime);color:#10120f;padding:12px;font-weight:850;cursor:pointer}button:disabled{opacity:.5}.status{min-height:17px;margin:10px 2px 0;color:var(--muted);font-size:12px}.status.error{color:#ff8168}
   </style>
 </head>
 <body>
-  <div class="top"><div class="brand">jev <i>signal</i></div><div class="live">READY</div></div>
+  <div class="top"><div class="brand">sig<i>null</i></div><div class="live">READY</div></div>
   <label for="key">vercel ai gateway key</label>
   <div class="key-row"><input id="key" type="password" autocomplete="off" placeholder="paste your gateway key"><button class="import" id="import" type="button">import .env</button></div>
   <input id="file" type="file" accept=".env,text/plain" hidden>
   <div class="key-note">saved locally · sent only to vercel</div>
-  <label for="preference">show me more…</label>
-  <textarea id="preference" rows="4" placeholder="e.g. thoughtful ai research, weird art, no engagement bait"></textarea>
+  <label for="x-preference">x / twitter taste</label>
+  <textarea id="x-preference" rows="3" placeholder="e.g. technical ai research and systems, no engagement bait"></textarea>
+  <div class="row"><label for="same-prompt">use this prompt for youtube</label><input class="switch" id="same-prompt" type="checkbox" checked></div>
+  <div class="prompt hidden" id="youtube-prompt">
+    <label for="youtube-preference">youtube taste</label>
+    <textarea id="youtube-preference" rows="3" placeholder="e.g. deep technical tutorials, visual explainers, no shorts"></textarea>
+  </div>
   <div class="row"><label for="dim">dim unlikely items</label><input class="switch" id="dim" type="checkbox" checked></div>
   <button id="run">mark this feed</button>
   <div class="status" id="status"></div>

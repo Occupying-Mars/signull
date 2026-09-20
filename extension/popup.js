@@ -1,16 +1,24 @@
 const key = document.querySelector('#key');
 const importButton = document.querySelector('#import');
 const fileInput = document.querySelector('#file');
-const preference = document.querySelector('#preference');
+const xPreference = document.querySelector('#x-preference');
+const youtubePreference = document.querySelector('#youtube-preference');
+const samePrompt = document.querySelector('#same-prompt');
+const youtubePrompt = document.querySelector('#youtube-prompt');
 const dim = document.querySelector('#dim');
 const run = document.querySelector('#run');
 const status = document.querySelector('#status');
 
-chrome.storage.local.get({ gatewayKey: '', preference: '', dim: true }, (saved) => {
+chrome.storage.local.get({ gatewayKey: '', preference: '', xPreference: '', youtubePreference: '', samePrompt: true, dim: true }, (saved) => {
   key.value = saved.gatewayKey;
-  preference.value = saved.preference;
+  xPreference.value = saved.xPreference || saved.preference;
+  youtubePreference.value = saved.youtubePreference || saved.preference;
+  samePrompt.checked = saved.samePrompt;
   dim.checked = saved.dim;
+  syncPromptMode();
 });
+
+samePrompt.addEventListener('change', syncPromptMode);
 
 importButton.addEventListener('click', () => fileInput.click());
 fileInput.addEventListener('change', async () => {
@@ -23,9 +31,17 @@ fileInput.addEventListener('change', async () => {
 });
 
 run.addEventListener('click', async () => {
-  const settings = { gatewayKey: cleanKey(key.value), preference: preference.value.trim(), dim: dim.checked, enabled: true };
+  const settings = {
+    gatewayKey: cleanKey(key.value),
+    xPreference: xPreference.value.trim(),
+    youtubePreference: youtubePreference.value.trim(),
+    samePrompt: samePrompt.checked,
+    dim: dim.checked,
+    enabled: true,
+  };
   if (settings.gatewayKey.length < 10) return show('add your vercel ai gateway key', true);
-  if (settings.preference.length < 5) return show('describe your taste first', true);
+  if (settings.xPreference.length < 5) return show('describe your x taste first', true);
+  if (!settings.samePrompt && settings.youtubePreference.length < 5) return show('describe your youtube taste too', true);
   run.disabled = true;
   await chrome.storage.local.set(settings);
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -34,8 +50,7 @@ run.addEventListener('click', async () => {
     return show('open x or youtube first', true);
   }
   try {
-    const { preference: taste, dim: shouldDim, enabled } = settings;
-    const response = await chrome.tabs.sendMessage(tab.id, { type: 'JEV_RUN', settings: { preference: taste, dim: shouldDim, enabled } });
+    const response = await chrome.tabs.sendMessage(tab.id, { type: 'JEV_RUN', settings });
     show(response?.message || 'scanning visible items…');
     window.setTimeout(() => window.close(), 700);
   } catch {
@@ -44,6 +59,10 @@ run.addEventListener('click', async () => {
     run.disabled = false;
   }
 });
+
+function syncPromptMode() {
+  youtubePrompt.classList.toggle('hidden', samePrompt.checked);
+}
 
 function show(message, error = false) {
   status.textContent = message;
