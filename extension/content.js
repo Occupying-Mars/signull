@@ -1,6 +1,6 @@
 const BATCH_SIZE = 6;
 const MAX_CONCURRENCY = 3;
-const state = { settings: null, timer: null, active: 0, cache: new Map() };
+const state = { settings: null, timer: null, active: 0, generation: 0, cache: new Map() };
 
 const styles = document.createElement('style');
 styles.textContent = `
@@ -16,7 +16,18 @@ styles.textContent = `
 document.documentElement.appendChild(styles);
 
 chrome.runtime.onMessage.addListener((message, _sender, respond) => {
+  if (message?.type === 'JEV_STOP') {
+    state.generation += 1;
+    state.settings = null;
+    resetMarks();
+    document.querySelector('#jev-status')?.remove();
+    document.querySelector('#jev-toast')?.remove();
+    respond({ message: 'filtering stopped' });
+    return;
+  }
+
   if (message?.type !== 'JEV_RUN') return;
+  state.generation += 1;
   state.settings = message.settings;
   resetMarks();
   scan();
@@ -66,6 +77,7 @@ function candidates() {
 function scan() {
   const preference = pagePreference();
   if (!preference) return;
+  const generation = state.generation;
   while (state.active < MAX_CONCURRENCY) {
     const pending = candidates().filter(({ element, id }) => {
       if (state.cache.has(id)) { mark(element, state.cache.get(id)); return false; }
@@ -77,11 +89,11 @@ function scan() {
     }
     pending.forEach(({ element }) => { element.dataset.jevQueued = 'true'; markPending(element); });
     state.active += 1;
-    runBatch(pending);
+    runBatch(pending, generation);
   }
 }
 
-async function runBatch(pending) {
+async function runBatch(pending, generation) {
   try {
     const response = await chrome.runtime.sendMessage({
       type: 'JEV_CLASSIFY',
@@ -89,14 +101,16 @@ async function runBatch(pending) {
       items: pending.map(({ element: _element, ...item }) => item),
     });
     if (response?.error) throw new Error(response.error);
+    if (generation !== state.generation || !state.settings) return;
     response.results.forEach((result) => state.cache.set(result.id, result));
     pending.forEach(({ element, id }) => mark(element, state.cache.get(id)));
   } catch (error) {
+    if (generation !== state.generation) return;
     pending.forEach(({ element }) => { delete element.dataset.jevQueued; clearMark(element); });
     showToast(error.message);
   } finally {
-    state.active -= 1;
-    setTimeout(scan, 0);
+    state.active = Math.max(0, state.active - 1);
+    if (state.settings) setTimeout(scan, 0);
   }
 }
 

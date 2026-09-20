@@ -7,15 +7,19 @@ const samePrompt = document.querySelector('#same-prompt');
 const youtubePrompt = document.querySelector('#youtube-prompt');
 const dim = document.querySelector('#dim');
 const run = document.querySelector('#run');
+const stop = document.querySelector('#stop');
 const status = document.querySelector('#status');
+const live = document.querySelector('#live');
+const liveLabel = document.querySelector('#live-label');
 
-chrome.storage.local.get({ gatewayKey: '', preference: '', xPreference: '', youtubePreference: '', samePrompt: true, dim: true }, (saved) => {
+chrome.storage.local.get({ gatewayKey: '', preference: '', xPreference: '', youtubePreference: '', samePrompt: true, dim: true, enabled: false }, (saved) => {
   key.value = saved.gatewayKey;
   xPreference.value = saved.xPreference || saved.preference;
   youtubePreference.value = saved.youtubePreference || saved.preference;
   samePrompt.checked = saved.samePrompt;
   dim.checked = saved.dim;
   syncPromptMode();
+  setLive(saved.enabled);
 });
 
 samePrompt.addEventListener('change', syncPromptMode);
@@ -51,13 +55,31 @@ run.addEventListener('click', async () => {
   }
   try {
     const response = await chrome.tabs.sendMessage(tab.id, { type: 'JEV_RUN', settings });
+    setLive(true);
     show(response?.message || 'scanning visible items…');
-    window.setTimeout(() => window.close(), 700);
   } catch {
     show('reload this page once, then try again', true);
   } finally {
     run.disabled = false;
   }
+});
+
+stop.addEventListener('click', async () => {
+  stop.disabled = true;
+  await chrome.storage.local.set({ enabled: false });
+  setLive(false);
+
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  if (tab?.id && /^https:\/\/(x\.com|twitter\.com|www\.youtube\.com)\//.test(tab.url || '')) {
+    try {
+      await chrome.tabs.sendMessage(tab.id, { type: 'JEV_STOP' });
+    } catch {
+      // The saved off state still prevents filtering after a page reload.
+    }
+  }
+
+  show('filtering stopped and all marks cleared');
+  stop.disabled = false;
 });
 
 function syncPromptMode() {
@@ -67,6 +89,11 @@ function syncPromptMode() {
 function show(message, error = false) {
   status.textContent = message;
   status.className = `status${error ? ' error' : ''}`;
+}
+
+function setLive(enabled) {
+  live.classList.toggle('on', enabled);
+  liveLabel.textContent = enabled ? 'filtering' : 'idle';
 }
 
 function cleanKey(value) {

@@ -2,26 +2,241 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    :root{color-scheme:dark;--lime:#c6ff5c;--ink:#f4f2eb;--muted:#8d918d;--line:#2a2e2b}*{box-sizing:border-box}body{width:338px;margin:0;padding:20px;background:#0c0e0d;color:var(--ink);font:14px/1.4 Inter,system-ui,sans-serif}.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:19px}.brand{font-size:20px;font-weight:850;letter-spacing:-.04em}.brand i{color:var(--lime);font-style:normal}.live{font:700 10px ui-monospace,monospace;color:var(--lime);letter-spacing:.1em}.live:before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:currentColor;margin-right:6px;box-shadow:0 0 10px currentColor}label{display:block;color:var(--muted);font:600 10px ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;margin:0 0 8px}textarea,input{width:100%;background:#141715;border:1px solid var(--line);border-radius:11px;color:var(--ink);font:inherit;padding:11px 12px;outline:none;resize:vertical}textarea:focus,input:focus{border-color:#647b3b}.key-row{display:flex;gap:7px}.key-row input{min-width:0}.key-row .import{width:auto;flex:0 0 auto;background:#202420;color:#c8ccc8;border:1px solid var(--line);padding:0 10px;font:700 10px ui-monospace,monospace}.key-note{margin:6px 2px 17px;color:#626762;font:10px ui-monospace,monospace}.prompt{margin-top:14px}.row{display:flex;align-items:center;justify-content:space-between;margin:14px 0}.row label{margin:0;color:var(--ink);font:500 13px system-ui;text-transform:none;letter-spacing:0}.switch{accent-color:var(--lime)}.hidden{display:none}button{width:100%;border:0;border-radius:11px;background:var(--lime);color:#10120f;padding:12px;font-weight:850;cursor:pointer}button:disabled{opacity:.5}.status{min-height:17px;margin:10px 2px 0;color:var(--muted);font-size:12px}.status.error{color:#ff8168}
+    :root {
+      color-scheme: dark;
+      --bg: #0a0b0d;
+      --panel: #121417;
+      --ink: #f4f3ee;
+      --muted: #858b91;
+      --line: #272b30;
+      --accent: #d7ff64;
+      --danger: #ff7b6f;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      width: 360px;
+      margin: 0;
+      padding: 22px;
+      background:
+        radial-gradient(circle at 88% -8%, rgba(215, 255, 100, .13), transparent 30%),
+        var(--bg);
+      color: var(--ink);
+      font: 14px/1.45 Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
+    }
+
+    header { display: flex; align-items: flex-start; justify-content: space-between; }
+
+    .eyebrow,
+    .field-label,
+    .micro {
+      color: var(--muted);
+      font: 650 10px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+      letter-spacing: .11em;
+      text-transform: uppercase;
+    }
+
+    .brand { margin-top: 3px; font-size: 28px; font-weight: 780; letter-spacing: -.055em; }
+    .brand span { color: var(--accent); }
+
+    .state {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: 4px;
+      padding: 7px 9px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      background: rgba(18, 20, 23, .75);
+      font: 700 10px ui-monospace, SFMono-Regular, Menlo, monospace;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .state-dot { width: 7px; height: 7px; border-radius: 50%; background: #555b61; }
+    .state.on { color: var(--accent); }
+    .state.on .state-dot { background: var(--accent); box-shadow: 0 0 12px rgba(215, 255, 100, .8); }
+    .lede { margin: 7px 0 20px; color: #a9adb1; font-size: 13px; }
+
+    .panel {
+      margin-top: 10px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(18, 20, 23, .92);
+    }
+
+    .section-head,
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+
+    .platform {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      font-weight: 700;
+      letter-spacing: -.02em;
+    }
+
+    .platform-mark {
+      display: grid;
+      width: 22px;
+      height: 22px;
+      place-items: center;
+      border-radius: 7px;
+      background: #23272c;
+      color: var(--ink);
+      font: 750 11px ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    input[type="password"],
+    textarea {
+      width: 100%;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      outline: none;
+      background: #090a0c;
+      color: var(--ink);
+      font: inherit;
+      transition: border-color .15s, background .15s;
+    }
+
+    input[type="password"] { min-width: 0; padding: 10px 11px; }
+    textarea { min-height: 72px; padding: 11px 12px; resize: vertical; }
+    input:focus, textarea:focus { border-color: #55662b; background: #0c0e0f; }
+    textarea::placeholder, input::placeholder { color: #5d6267; }
+    .key-row { display: flex; gap: 7px; margin-top: 9px; }
+
+    button {
+      border: 0;
+      border-radius: 11px;
+      cursor: pointer;
+      font: 750 13px/1 ui-sans-serif, system-ui, sans-serif;
+      transition: transform .12s, opacity .12s, background .12s;
+    }
+
+    button:active { transform: translateY(1px); }
+    button:disabled { cursor: wait; opacity: .5; }
+
+    .import {
+      flex: 0 0 auto;
+      padding: 0 11px;
+      border: 1px solid var(--line);
+      background: #1b1e22;
+      color: #c1c5c8;
+      font-size: 11px;
+    }
+
+    .field-label { display: block; margin-bottom: 8px; }
+    .prompt { margin-top: 14px; }
+    .hidden { display: none; }
+
+    .toggle-row { min-height: 30px; color: #c7cacb; font-size: 12px; }
+    .toggle-row + .toggle-row,
+    .prompt + .toggle-row { margin-top: 8px; }
+    .toggle { position: relative; display: inline-flex; flex: 0 0 auto; cursor: pointer; }
+    .toggle input { position: absolute; opacity: 0; pointer-events: none; }
+
+    .track {
+      width: 34px;
+      height: 20px;
+      padding: 3px;
+      border-radius: 999px;
+      background: #30343a;
+      transition: background .18s;
+    }
+
+    .track::after {
+      content: "";
+      display: block;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #a4a8ab;
+      transition: transform .18s, background .18s;
+    }
+
+    .toggle input:checked + .track { background: var(--accent); }
+    .toggle input:checked + .track::after { transform: translateX(14px); background: #11130e; }
+    .toggle input:focus-visible + .track { outline: 2px solid #899f4e; outline-offset: 2px; }
+
+    .actions { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 12px; }
+    .primary { padding: 13px 16px; background: var(--accent); color: #11130e; }
+    .primary:hover { background: #e0ff82; }
+
+    .stop {
+      padding: 13px 16px;
+      border: 1px solid #3a3030;
+      background: #191718;
+      color: #d8b0ac;
+    }
+
+    .stop:hover { background: #241b1b; color: #ffaca3; }
+    .status { min-height: 18px; margin: 10px 2px 0; color: var(--muted); font-size: 12px; }
+    .status.error { color: var(--danger); }
   </style>
 </head>
 <body>
-  <div class="top"><div class="brand">sig<i>null</i></div><div class="live">READY</div></div>
-  <label for="key">vercel ai gateway key</label>
-  <div class="key-row"><input id="key" type="password" autocomplete="off" placeholder="paste your gateway key"><button class="import" id="import" type="button">import .env</button></div>
-  <input id="file" type="file" accept=".env,text/plain" hidden>
-  <div class="key-note">saved locally · sent only to vercel</div>
-  <label for="x-preference">x / twitter taste</label>
-  <textarea id="x-preference" rows="3" placeholder="e.g. technical ai research and systems, no engagement bait"></textarea>
-  <div class="row"><label for="same-prompt">use this prompt for youtube</label><input class="switch" id="same-prompt" type="checkbox" checked></div>
-  <div class="prompt hidden" id="youtube-prompt">
-    <label for="youtube-preference">youtube taste</label>
-    <textarea id="youtube-preference" rows="3" placeholder="e.g. deep technical tutorials, visual explainers, no shorts"></textarea>
+  <header>
+    <div>
+      <div class="eyebrow">feed classifier</div>
+      <div class="brand">sig<span>null</span></div>
+    </div>
+    <div class="state" id="live"><span class="state-dot"></span><span id="live-label">idle</span></div>
+  </header>
+
+  <p class="lede">keep the signal. dim the rest.</p>
+
+  <section class="panel">
+    <div class="section-head">
+      <label class="field-label" for="key">gateway key</label>
+      <span class="micro">local only</span>
+    </div>
+    <div class="key-row">
+      <input id="key" type="password" autocomplete="off" placeholder="vercel ai gateway key">
+      <button class="import" id="import" type="button">import .env</button>
+    </div>
+    <input id="file" type="file" accept=".env,text/plain" hidden>
+  </section>
+
+  <section class="panel">
+    <div class="platform"><span class="platform-mark">X</span>twitter</div>
+    <label class="field-label" for="x-preference">what belongs in your feed?</label>
+    <textarea id="x-preference" rows="3" placeholder="technical ai research and systems; skip engagement bait"></textarea>
+  </section>
+
+  <section class="panel">
+    <div class="platform"><span class="platform-mark">YT</span>youtube</div>
+    <div class="toggle-row">
+      <span>use the twitter prompt</span>
+      <label class="toggle" aria-label="use the twitter prompt for youtube">
+        <input id="same-prompt" type="checkbox" checked>
+        <span class="track"></span>
+      </label>
+    </div>
+    <div class="prompt hidden" id="youtube-prompt">
+      <label class="field-label" for="youtube-preference">youtube preference</label>
+      <textarea id="youtube-preference" rows="3" placeholder="deep tutorials and visual explainers; skip shorts"></textarea>
+    </div>
+    <div class="toggle-row">
+      <span>dim unlikely items</span>
+      <label class="toggle" aria-label="dim unlikely items">
+        <input id="dim" type="checkbox" checked>
+        <span class="track"></span>
+      </label>
+    </div>
+  </section>
+
+  <div class="actions">
+    <button class="primary" id="run" type="button">start filtering</button>
+    <button class="stop" id="stop" type="button">stop</button>
   </div>
-  <div class="row"><label for="dim">dim unlikely items</label><input class="switch" id="dim" type="checkbox" checked></div>
-  <button id="run">mark this feed</button>
-  <div class="status" id="status"></div>
+  <div class="status" id="status" aria-live="polite"></div>
+
   <script src="popup.js"></script>
 </body>
 </html>
