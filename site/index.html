@@ -115,6 +115,13 @@
 
     .download:focus-visible { outline: 1px solid #8d8981; outline-offset: 6px; }
 
+    .download-note {
+      display: block;
+      margin-top: 9px;
+      color: var(--muted);
+      font: 500 11px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
     .meta {
       display: block;
       margin-top: 25px;
@@ -173,8 +180,9 @@
         <h1 class="wordmark" id="signull-title">signull</h1>
         <p>tell it what you care about. signull reads the posts and videos already in front of you, then quietly separates signal from noise.</p>
         <a class="download" href="/signull-extension.zip" download>
-          download now <span aria-hidden="true">→</span>
+          add to chrome <span aria-hidden="true">→</span>
         </a>
+        <span class="download-note">downloads a zip to load as an unpacked extension</span>
         <span class="meta">x + youtube · bring your own key · v0.3.3</span>
         <a class="key-link" href="https://vercel.com/d?title=AI+Gateway+API+Keys&amp;to=%2F%5Bteam%5D%2F~%2Fai-gateway%2Fapi-keys" target="_blank" rel="noopener noreferrer">get a vercel key ↗</a>
       </div>
