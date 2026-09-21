@@ -124,6 +124,19 @@
       text-transform: uppercase;
     }
 
+    .key-link {
+      display: inline-block;
+      margin-top: 11px;
+      color: #aaa69e;
+      font-size: 13px;
+      text-decoration: underline;
+      text-decoration-color: #77746e;
+      text-underline-offset: 3px;
+    }
+
+    .key-link:hover { color: #e5e2da; }
+    .key-link:focus-visible { outline: 1px solid #8d8981; outline-offset: 4px; }
+
     @media (max-width: 760px) {
       .hero {
         grid-template-columns: minmax(240px, 320px);
@@ -162,7 +175,8 @@
         <a class="download" href="/signull-extension.zip" download>
           download now <span aria-hidden="true">→</span>
         </a>
-        <span class="meta">x + youtube · bring your own key · v0.3.2</span>
+        <span class="meta">x + youtube · bring your own key · v0.3.3</span>
+        <a class="key-link" href="https://vercel.com/d?title=AI+Gateway+API+Keys&amp;to=%2F%5Bteam%5D%2F~%2Fai-gateway%2Fapi-keys" target="_blank" rel="noopener noreferrer">get a vercel key ↗</a>
       </div>
     </section>
   </main>

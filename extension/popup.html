@@ -70,6 +70,19 @@
     .section-head,
     .toggle-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 
+    .key-actions { display: flex; align-items: center; gap: 12px; }
+    .key-actions .field-label { margin: 0; }
+    .get-key {
+      padding: 4px 7px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: #c5c8ca;
+      font: 650 11px/1.2 ui-sans-serif, system-ui, sans-serif;
+      text-decoration: none;
+    }
+    .get-key:hover { color: var(--ink); }
+    .get-key:focus-visible { outline: 2px solid #777c82; outline-offset: 3px; }
+
     .platform {
       display: flex;
       align-items: center;
@@ -190,7 +203,10 @@
 
   <section class="panel">
     <div class="section-head">
-      <label class="field-label" for="key">gateway key</label>
+      <div class="key-actions">
+        <label class="field-label" for="key">gateway key</label>
+        <a class="get-key" href="https://vercel.com/d?title=AI+Gateway+API+Keys&amp;to=%2F%5Bteam%5D%2F~%2Fai-gateway%2Fapi-keys" target="_blank" rel="noopener noreferrer">get key ↗</a>
+      </div>
       <span class="micro">local only</span>
     </div>
     <div class="key-row">
